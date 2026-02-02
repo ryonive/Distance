@@ -4,13 +4,12 @@ using System.Numerics;
 
 using CheapLoc;
 
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Interface;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-
-using Dalamud.Bindings.ImGui;
 
 namespace Distance;
 
@@ -204,7 +203,7 @@ internal sealed class PluginUI_CustomArcs : IDisposable
 				ImGui.TreePop();
 			}
 
-			if( ImGui.TreeNode( Loc.Localize("Config Section Header: Distance Arc Condition", "Condition Filters" ) + "###DistanceArcConditionsHeader" ) )
+			if( ImGui.TreeNode( Loc.Localize( "Config Section Header: Distance Arc Condition", "Condition Filters" ) + "###DistanceArcConditionsHeader" ) )
 			{
 				config.Filters.DrawConditionOptions();
 				ImGui.TreePop();
@@ -299,7 +298,7 @@ internal sealed class PluginUI_CustomArcs : IDisposable
 		foreach( var config in mConfiguration.DistanceArcConfigs )
 		{
 			if( !config.Enabled ) continue;
-			if( !config.Filters.ShowDistanceForConditions( Service.Condition[ConditionFlag.InCombat], Service.Condition[ConditionFlag.BoundByDuty] ) ) continue;
+			if( !config.Filters.ShowDistanceForConditions( Service.Condition[ConditionFlag.InCombat], Service.Condition[ConditionFlag.BoundByDuty], Service.Condition[ConditionFlag.DutyRecorderPlayback] ) ) continue;
 			if( !config.Filters.ShowDistanceForClassJob( Service.PlayerState?.ClassJob.RowId ?? 0 ) ) continue;
 			//	Note that we cannot evaluate the object type filters here, because they may behave differently by target category.
 

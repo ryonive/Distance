@@ -23,11 +23,11 @@ internal static unsafe class NameplateHandler
 		{
 			EnableNameplateDistances();
 		}
-    }
+	}
 
 	internal static void Uninit()
 	{
-        DisableNameplateDistances();
+		DisableNameplateDistances();
 
 		DestroyNameplateDistanceNodes();
 
@@ -115,7 +115,7 @@ internal static unsafe class NameplateHandler
 						mNameplateDistanceInfoArray[pObjectInfo->NamePlateIndex].TargetKind = (Dalamud.Game.ClientState.Objects.Enums.ObjectKind)pObject->ObjectKind;
 						mNameplateDistanceInfoArray[pObjectInfo->NamePlateIndex].ObjectID = pObject->EntityId;
 						mNameplateDistanceInfoArray[pObjectInfo->NamePlateIndex].ObjectAddress = new IntPtr( pObject );
-						mNameplateDistanceInfoArray[pObjectInfo->NamePlateIndex].PlayerPosition = Service.ObjectTable.LocalPlayer?.Position ?? Vector3.Zero;
+						mNameplateDistanceInfoArray[pObjectInfo->NamePlateIndex].PlayerPosition = TargetResolver.EffectiveLocalPlayer?.Position ?? Vector3.Zero;
 						mNameplateDistanceInfoArray[pObjectInfo->NamePlateIndex].TargetPosition = new( pObject->Position.X, pObject->Position.Y, pObject->Position.Z );
 						mNameplateDistanceInfoArray[pObjectInfo->NamePlateIndex].TargetRadius_Yalms = pObject->HitboxRadius;
 
@@ -141,11 +141,11 @@ internal static unsafe class NameplateHandler
 		if( i < 0 || i >= mNameplateDistanceInfoArray.Length ) return false;
 		if( mConfiguration == null ) return false;
 		if( !mConfiguration.NameplateDistancesConfig.ShowNameplateDistances ) return false;
-		if( !mConfiguration.NameplateDistancesConfig.Filters.ShowDistanceForConditions( Service.Condition[ConditionFlag.InCombat], Service.Condition[ConditionFlag.BoundByDuty] ) ) return false;
+		if( !mConfiguration.NameplateDistancesConfig.Filters.ShowDistanceForConditions( Service.Condition[ConditionFlag.InCombat], Service.Condition[ConditionFlag.BoundByDuty], Service.Condition[ConditionFlag.DutyRecorderPlayback] ) ) return false;
 
 		var distanceInfo = mNameplateDistanceInfoArray[i];
 
-		if( distanceInfo.ObjectID == Service.PlayerState?.EntityId ) return false;
+		if( distanceInfo.ObjectID == TargetResolver.EffectiveLocalPlayer?.EntityId ) return false;
 
 		bool filtersPermitShowing = mConfiguration.NameplateDistancesConfig.Filters.ShowDistanceForObjectKind( distanceInfo.TargetKind ) &&
 									mConfiguration.NameplateDistancesConfig.Filters.ShowDistanceForClassJob( Service.PlayerState?.ClassJob.RowId ?? 0 );
@@ -481,7 +481,7 @@ internal static unsafe class NameplateHandler
 				EdgeColorB = pNameplateTextNode->EdgeColor.B,
 				FontSize = pNameplateTextNode->FontSize,
 				Alignment = pNameplateTextNode->AlignmentType,
-				Font = pNameplateTextNode-> FontType,
+				Font = pNameplateTextNode->FontType,
 				LineSpacing = pNameplateTextNode->LineSpacing,
 				CharSpacing = pNameplateTextNode->CharSpacing,
 				//***** TODO

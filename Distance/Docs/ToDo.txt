@@ -54,6 +54,9 @@ Cleanup:
 
 Misc:
 	-Translations.
+	-Add a button that adds the current target to a custom aggro distance list for the user.
+		-It also either optionally copies a string to submit for an issue/PR, or maybe just a separate button for that.
+			-String would include TerritoryType, BNpcName ID, BNpcBase ID, and yalm distance from ring and center.
 
 
 Maybe:

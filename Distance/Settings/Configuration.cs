@@ -34,6 +34,7 @@ public sealed class Configuration : IPluginConfiguration
 
 	//	Need a real field (not just a property) available for use with ImGui.
 	public bool SuppressCommandLineResponses = false;
+	public bool DutyRecorderTreatSelectedCharacterAsPlayer = true;
 	public bool AutoUpdateAggroData = true;
 	public bool ShowAggroDistance = false;
 	public bool ShowUnitsOnAggroDistance = true;

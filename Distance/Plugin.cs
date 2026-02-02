@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Threading.Tasks;
 
 using CheapLoc;
@@ -22,9 +23,6 @@ public sealed class Plugin : IDalamudPlugin
 		pluginInterface.Create<Service>();
 		mPluginInterface = pluginInterface;
 
-		//	Initialization
-		TargetResolver.Init();
-
 		//	Configuration
 		mConfiguration = mPluginInterface.GetPluginConfig() as Configuration;
 		if( mConfiguration == null )
@@ -33,6 +31,9 @@ public sealed class Plugin : IDalamudPlugin
 			mConfiguration.DistanceWidgetConfigs.Add( new() );
 		}
 		mConfiguration.Initialize( mPluginInterface );
+
+		//	Initialization
+		TargetResolver.Init( mConfiguration );
 
 		//	Aggro distance data loading
 		Task.Run( async () =>
@@ -55,7 +56,7 @@ public sealed class Plugin : IDalamudPlugin
 				var downloadedFile = await BNpcAggroInfoDownloader.DownloadUpdatedAggroDataAsync( AggroDataPath, highestLocalVersion );
 				aggroFile_Config = downloadedFile ?? aggroFile_Config;
 			}
-			
+
 			var fileToUse = aggroFile_Config.FileVersion > aggroFile_Assembly.FileVersion ? aggroFile_Config : aggroFile_Assembly;
 			BNpcAggroInfo.Init( Service.DataManager, fileToUse );
 		} );
@@ -347,7 +348,7 @@ public sealed class Plugin : IDalamudPlugin
 
 		return	config.Filters.ShowDistanceForObjectKind( mCurrentDistanceInfoArray[(int)config.ApplicableTargetType].TargetKind ) &&
 				config.Filters.ShowDistanceForClassJob( Service.PlayerState?.ClassJob.RowId ?? 0 ) &&
-				config.Filters.ShowDistanceForConditions( Service.Condition[ConditionFlag.InCombat], Service.Condition[ConditionFlag.BoundByDuty] );
+				config.Filters.ShowDistanceForConditions( Service.Condition[ConditionFlag.InCombat], Service.Condition[ConditionFlag.BoundByDuty], Service.Condition[ConditionFlag.DutyRecorderPlayback] );
 	}
 
 	private void UpdateTargetDistanceData()
@@ -370,7 +371,7 @@ public sealed class Plugin : IDalamudPlugin
 				mCurrentDistanceInfoArray[i].IsValid = true;
 				mCurrentDistanceInfoArray[i].TargetKind = target.ObjectKind;
 				mCurrentDistanceInfoArray[i].ObjectID = target.EntityId;
-				mCurrentDistanceInfoArray[i].PlayerPosition = Service.ObjectTable.LocalPlayer.Position;
+				mCurrentDistanceInfoArray[i].PlayerPosition = TargetResolver.EffectiveLocalPlayer?.Position ?? Vector3.Zero;
 				mCurrentDistanceInfoArray[i].TargetPosition = target.Position;
 				mCurrentDistanceInfoArray[i].TargetRadius_Yalms = target.HitboxRadius;
 				mCurrentDistanceInfoArray[i].BNpcID = ( target as Dalamud.Game.ClientState.Objects.Types.IBattleNpc )?.NameId ?? 0;

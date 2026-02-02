@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 using CheapLoc;
 
-using Dalamud.Interface.Utility;
-
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility;
 
 namespace Distance;
 
@@ -172,6 +171,8 @@ internal sealed class PluginUI_GeneralSettings : IDisposable
 		{
 			ImGui.Checkbox( Loc.Localize( "Config Option: Suppress Text Command Responses", "Suppress text command responses." ) + "###Suppress text command responses.", ref mConfiguration.SuppressCommandLineResponses );
 			ImGuiUtils.HelpMarker( Loc.Localize( "Help: Suppress Text Command Responses", "Selecting this prevents any text commands you use from printing responses to chat.  Responses to the help command will always be printed." ) );
+			ImGui.Checkbox( Loc.Localize( "Config Option: Use Selected Replay Character", "Use the currently selected replay character to compute distances." ) + "###UseSelectedReplayCharacterCheckbox.", ref mConfiguration.DutyRecorderTreatSelectedCharacterAsPlayer );
+			ImGuiUtils.HelpMarker( Loc.Localize( "Help: Use Selected Replay Character", "When replaying a recorded duty, selecting this will measure distances from the character whose viewpoint you are watching instead of your own character." ) );
 		}
 		else
 		{

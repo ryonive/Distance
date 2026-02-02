@@ -13,10 +13,10 @@
 
 	<!-- Project Information -->
 	<PropertyGroup>
-		<Version>1.1.3.4</Version>
+		<Version>1.1.4.0</Version>
 		<Authors>PunishedPineapple</Authors>
 		<Product />
-		<Copyright>Copyright © PunishedPineapple 2022-2025</Copyright>
+		<Copyright>Copyright © PunishedPineapple 2022-2026</Copyright>
 		<PackageProjectUrl>https://github.com/PunishedPineapple/Distance</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/PunishedPineapple/Distance</RepositoryUrl>
 	</PropertyGroup>

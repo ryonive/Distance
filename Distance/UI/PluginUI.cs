@@ -6,13 +6,13 @@ using System.Numerics;
 
 using CheapLoc;
 
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Plugin;
 
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-
-using Dalamud.Bindings.ImGui;
 
 namespace Distance;
 
@@ -237,9 +237,25 @@ public sealed class PluginUI : IDisposable
 			ImGui.Spacing();
 			ImGui.Spacing();
 
+			var pReplayManagerInstance = ContentsReplayManager.Instance();
+			var pGroupManagerInstance = FFXIVClientStructs.FFXIV.Client.Game.Group.GroupManager.Instance();
+			var pReplayGroup = pGroupManagerInstance is not null ? &(pGroupManagerInstance->ReplayGroup) : (FFXIVClientStructs.FFXIV.Client.Game.Group.GroupManager.Group*)0;
+			var pTargetSystem = FFXIVClientStructs.FFXIV.Client.Game.Control.TargetSystem.Instance();
 			ImGui.Text( "Addresses:" );
-			ImGui.Text( $"Nameplate Addon: 0x{Service.GameGui.GetAddonByName( "NamePlate", 1 ):X}" );
-			ImGui.Text( $"Nameplate Addon (Cached): 0x{NameplateHandler.DEBUG_CachedNameplateAddonPtr:X}" );
+			ImGuiUtils.CopyableAddress( "Nameplate Addon", Service.GameGui.GetAddonByName( "NamePlate", 1 ) );
+			ImGuiUtils.CopyableAddress( "Nameplate Addon (Cached)", NameplateHandler.DEBUG_CachedNameplateAddonPtr );
+			ImGuiUtils.CopyableAddress( "ContentsReplayManager", pReplayManagerInstance );
+			ImGuiUtils.CopyableAddress( "Replay Group", pReplayGroup );
+			ImGuiUtils.CopyableAddress( "Target System", pTargetSystem );
+
+			ImGui.Spacing();
+			ImGui.Spacing();
+			ImGui.Spacing();
+			ImGui.Spacing();
+			ImGui.Spacing();
+
+			ImGui.Text( $"Replay Character Index: {( pReplayManagerInstance is not null ? pReplayManagerInstance->Header.PlayerIndex : -1 )}" );
+			ImGui.Text( $"Replay Group Party Lead: {( pReplayGroup is not null ? pReplayGroup->PartyLeaderIndex : -1 )}" );
 
 			ImGui.Spacing();
 			ImGui.Spacing();

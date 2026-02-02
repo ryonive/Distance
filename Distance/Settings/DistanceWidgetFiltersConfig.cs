@@ -4,9 +4,8 @@ using System.Runtime.Serialization;
 
 using CheapLoc;
 
-using Dalamud.Utility;
-
 using Dalamud.Bindings.ImGui;
+using Dalamud.Utility;
 
 using Newtonsoft.Json;
 
@@ -38,12 +37,13 @@ public class DistanceWidgetFiltersConfig
 				ApplicableClassJobsArray[classJob] == true;
 	}
 
-	internal bool ShowDistanceForConditions( bool inCombat, bool inInstance )
+	internal bool ShowDistanceForConditions( bool inCombat, bool inInstance, bool dutyRecorderPlayback )
 	{
 		bool combatShow = inCombat && ShowInCombat || !inCombat && ShowOutOfCombat;
 		bool instanceShow = inInstance && ShowInInstance || !inInstance && ShowOutOfInstance;
 
-		return combatShow && instanceShow;
+		if( dutyRecorderPlayback ) return ShowInDutyRecorderPlayback;
+		else return combatShow && instanceShow;
 	}
 
 	internal void DrawObjectKindOptions()
@@ -105,6 +105,7 @@ public class DistanceWidgetFiltersConfig
 		ImGui.Checkbox( Loc.Localize( "Config Option: Show out of Combat", "Show out of combat." ) + "###ShowOutOfCombatCheckbox", ref ShowOutOfCombat );
 		ImGui.Checkbox( Loc.Localize( "Config Option: Show in Instance", "Show in instance." ) + "###ShowInInstanceCheckbox", ref ShowInInstance );
 		ImGui.Checkbox( Loc.Localize( "Config Option: Show out of Instance", "Show out of instance." ) + "###ShowOutOfInstanceCheckbox", ref ShowOutOfInstance );
+		ImGui.Checkbox( Loc.Localize( "Config Option: Show in Duty Recorder Playback", "Show during Duty Recorder playback." ) + "###ShowInDutyRecorderPlaybackCheckbox", ref ShowInDutyRecorderPlayback );
 	}
 
 	#region Object Types
@@ -190,6 +191,7 @@ public class DistanceWidgetFiltersConfig
 	public bool ShowOutOfCombat = true;
 	public bool ShowInInstance = true;
 	public bool ShowOutOfInstance = true;
+	public bool ShowInDutyRecorderPlayback = true;
 
 	#endregion
 }

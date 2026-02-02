@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Numerics;
 
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface;
 
 namespace Distance;
 
@@ -109,6 +110,31 @@ internal static class ImGuiUtils
 		Vector2 max = ImGui.GetItemRectMax();
 		max.Y = min.Y;
 		ImGui.GetWindowDrawList().AddLine( min, max, ColorVecToUInt( color ), thickness );
+	}
+
+	public static unsafe void CopyableAddress( string addressDescription, void* address ) => CopyableAddress( addressDescription, (nint)address );
+
+	public static void CopyableAddress( string addressDescription, nint address )
+	{
+		ImGui.Text( $"{addressDescription}:" );
+		ImGui.SameLine();
+		ImGui.Text( $"0x{address:X}" );
+		if( ImGui.IsItemClicked() ) ImGui.SetClipboardText( $"{address:X}" );
+		if( ImGui.IsItemHovered() )
+		{
+			AddUnderline( Vector4.One, 1f );
+			ImGui.SetMouseCursor( ImGuiMouseCursor.Hand );
+			ImGui.SameLine();
+			ImGui.PushFont( UiBuilder.IconFont );
+			try
+			{
+				ImGui.Text( "\uF0C5" );
+			}
+			finally
+			{
+				ImGui.PopFont();
+			}
+		}
 	}
 
 	internal const ImGuiWindowFlags OverlayWindowFlags =    ImGuiWindowFlags.NoDecoration |
